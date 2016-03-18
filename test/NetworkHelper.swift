@@ -35,7 +35,7 @@ class NetworkHelper: NSObject {
                         photoObj.photoID = "\(photo["id"]!)"
                         photoObj.server = "\(photo["server"]!)"
                         photoObj.title = "\(photo["title"]!)"
-                        photoObj.size = "q"
+                        photoObj.size = "n"
                         
                         flickrPhotoObjects.append(photoObj)
                     }

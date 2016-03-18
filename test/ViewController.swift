@@ -10,15 +10,11 @@ import UIKit
 
 class ViewController: BaseViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
 
-    @IBOutlet weak var navigationBarTitle: UINavigationItem!
-    
     var collectionView: UICollectionView!
     var photosList:[FlickrPhoto]?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        navigationBarTitle.title = "Search Results for Volkswagen"
         
         initSubViews()
         loadPhotos()
@@ -37,6 +33,8 @@ class ViewController: BaseViewController, UICollectionViewDataSource, UICollecti
     }
     
     func loadPhotos(){
+        showLoadingIndicator()
+        
         NetworkHelper().getPhotos({ (data) -> Void in
             self.photosList = data
             self.performSelectorOnMainThread("reloadData", withObject: nil, waitUntilDone: false)
@@ -60,7 +58,6 @@ class ViewController: BaseViewController, UICollectionViewDataSource, UICollecti
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("photosCell", forIndexPath: indexPath) as! PhotosCell
         cell.photoObj = photosList![indexPath.item]
-        cell.updateData()
         return cell
     }
     

@@ -13,7 +13,12 @@ class PhotosCell: UICollectionViewCell {
     var frontView: SPImageView?
     var backView: UIView?
     var isFrontVisible: Bool = true
-    var photoObj: FlickrPhoto?
+
+    var photoObj: FlickrPhoto?{
+        didSet{
+            updateDataForFront()
+        }
+    }
         
     required internal init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!
@@ -28,9 +33,12 @@ class PhotosCell: UICollectionViewCell {
     private func commonInit()
     {
         frontView = SPImageView(frame: self.bounds)
-        frontView?.contentMode = UIViewContentMode.ScaleToFill
+        frontView?.contentMode = UIViewContentMode.ScaleAspectFit
+        frontView?.clipsToBounds = true
         self.addSubview(frontView!)
 
+        self.backgroundColor = UIColor(red: 204.0/255.0, green: 204.0/255.0, blue: 204.0/255.0, alpha: 1.0)
+        
         let singleTap = UITapGestureRecognizer(target: self, action: "tapped")
         self.addGestureRecognizer(singleTap)
     }
@@ -50,7 +58,7 @@ class PhotosCell: UICollectionViewCell {
         (backView?.viewWithTag(500) as? UILabel)?.text = photoObj!.title
     }
     
-    private func tapped()
+    func tapped()
     {
         if(isFrontVisible)
         {
@@ -71,6 +79,7 @@ class PhotosCell: UICollectionViewCell {
 
         let label = UILabel(frame: backView!.bounds)
         label.tag = 500
+        label.textAlignment = NSTextAlignment.Center
         label.numberOfLines = 0
         label.font = Fonts.IMAGE_BACK_TITLE
         backView?.addSubview(label)
