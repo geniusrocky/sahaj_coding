@@ -19,20 +19,20 @@ class SPImageView : UIImageView {
     
     func setImageFromUrl(url: NSURL, cachingKey: String, saveToDisk: Bool)
     {
+        associatedObjId = cachingKey
         let img = SPImageCache.sharedInstance.imageForKey(cachingKey)
         if(img == nil)
         {
             self.image = UIImage(named: "placeholder")
-            associatedObjId = cachingKey
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { [weak self]() -> Void in
                 let data = NSData(contentsOfURL: url)
                 let img = UIImage(data: data!)
                 SPImageCache.sharedInstance.storeImage(img!, forKey: cachingKey, toDisk: saveToDisk)
 
-                if(self.associatedObjId == cachingKey)
+                if(self?.associatedObjId == cachingKey)
                 {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                            self.image = img
+                            self?.image = img
                     })
                 }
             })

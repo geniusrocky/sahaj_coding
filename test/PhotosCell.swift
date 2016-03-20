@@ -14,12 +14,8 @@ class PhotosCell: UICollectionViewCell {
     var backView: UIView?
     var isFrontVisible: Bool = true
 
-    var photoObj: FlickrPhoto?{
-        didSet{
-            updateDataForFront()
-        }
-    }
-        
+    var photoObj: FlickrPhoto?
+    
     required internal init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!
         commonInit()

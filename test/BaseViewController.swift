@@ -43,6 +43,16 @@ class BaseViewController: UIViewController {
         activity!.removeFromSuperview()
     }
 
+    func showErrorMsg(errorMsg: String)
+    {
+        let alert = UIAlertController(title: "Error", message: errorMsg, preferredStyle: UIAlertControllerStyle.Alert)
+        let cancelAction:UIAlertAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.Cancel, handler: { (UIAlertAction) -> Void in
+        })
+        alert.addAction(cancelAction)
+        
+        self.presentViewController(alert, animated: true, completion: { () -> Void in
+        })
+    }
     
 
 }

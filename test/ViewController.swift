@@ -9,7 +9,7 @@
 import UIKit
 
 class ViewController: BaseViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
-
+    
     var collectionView: UICollectionView!
     var photosList:[FlickrPhoto]?
     
@@ -39,6 +39,7 @@ class ViewController: BaseViewController, UICollectionViewDataSource, UICollecti
             self.photosList = data
             self.performSelectorOnMainThread("reloadData", withObject: nil, waitUntilDone: false)
             }) { (error) -> Void in
+                self.performSelectorOnMainThread("showError:", withObject: error!, waitUntilDone: false)
         }
     }
     
@@ -46,6 +47,13 @@ class ViewController: BaseViewController, UICollectionViewDataSource, UICollecti
     {
         hideLoadingIndiactor()
         self.collectionView.reloadData()
+    }
+    
+    func showError(string: String)
+    {
+        print(string)
+        hideLoadingIndiactor()
+        showErrorMsg(string)
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -58,6 +66,7 @@ class ViewController: BaseViewController, UICollectionViewDataSource, UICollecti
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("photosCell", forIndexPath: indexPath) as! PhotosCell
         cell.photoObj = photosList![indexPath.item]
+        cell.updateData()
         return cell
     }
     

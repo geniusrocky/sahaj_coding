@@ -24,7 +24,6 @@ class SPImageCache {
         return Static.instance!
     }
     
-    var cacheInterval: Double = 300
     private var memCache:[String: UIImage] = [String: UIImage]()
     
     func resetCache()

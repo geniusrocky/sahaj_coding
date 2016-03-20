@@ -8,48 +8,58 @@
 
 import UIKit
 
-class NetworkHelper: NSObject {
+typealias SuccessHandler = ([FlickrPhoto]?) -> Void
+typealias FailureHandler = (String?) -> Void
 
-    func getPhotos(onSuccess:([FlickrPhoto]?)-> Void, onFailure:(String?)-> Void)
+
+class NetworkHelper: NSObject {
+    
+    
+    func getPhotos(onSuccess:SuccessHandler, onFailure:FailureHandler)
     {
-        
         let urlRequest = NSMutableURLRequest(URL: NSURL(string: URLS.FLICKR_GET_PHOTOS)!)
         urlRequest.HTTPMethod = "GET"
-
+        
         let task = NSURLSession.sharedSession().dataTaskWithRequest(urlRequest) { (data, resposne, error) -> Void in
-
-            do{
-                let dic = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments)
-                
-                if((dic["stat"] as! String) == "ok")
-                {
-                    let photosArr = dic["photos"]!!["photo"] as! [[String:AnyObject]]
-
-                    var flickrPhotoObjects = [FlickrPhoto]()
-
-                    for photo in photosArr
-                    {
-                        let photoObj = FlickrPhoto()
-                        photoObj.farm = "\(photo["farm"]!)"
-                        photoObj.secret = "\(photo["secret"]!)"
-                        photoObj.photoID = "\(photo["id"]!)"
-                        photoObj.server = "\(photo["server"]!)"
-                        photoObj.title = "\(photo["title"]!)"
-                        photoObj.size = "n"
-                        
-                        flickrPhotoObjects.append(photoObj)
-                    }
+            
+            if(error == nil)
+            {
+                do{
+                    let dic = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments)
                     
-                    onSuccess(flickrPhotoObjects)
+                    if((dic["stat"] as! String) == "ok")
+                    {
+                        let photosArr = dic["photos"]!!["photo"] as! [[String:AnyObject]]
+                        
+                        var flickrPhotoObjects = [FlickrPhoto]()
+                        
+                        for photo in photosArr
+                        {
+                            let photoObj = FlickrPhoto()
+                            photoObj.farm = "\(photo["farm"]!)"
+                            photoObj.secret = "\(photo["secret"]!)"
+                            photoObj.photoID = "\(photo["id"]!)"
+                            photoObj.server = "\(photo["server"]!)"
+                            photoObj.title = "\(photo["title"]!)"
+                            photoObj.size = "n"
+                            
+                            flickrPhotoObjects.append(photoObj)
+                        }
+                        
+                        onSuccess(flickrPhotoObjects)
+                    }
+                    else
+                    {
+                        onFailure(dic["message"] as? String)
+                    }
                 }
-                else
-                {
-                    onFailure(dic["message"] as? String)
+                catch{
+                    onFailure("error parsing data")
                 }
             }
-            catch{
-                onFailure("")
-                print("error parsing data")
+            else
+            {
+                onFailure(error!.localizedDescription)
             }
         }
         task.resume()
